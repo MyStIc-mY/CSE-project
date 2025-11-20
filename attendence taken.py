@@ -1,14 +1,4 @@
-"""
-Student Attendance Manager (CLI)
-Features:
-- Add / View students list
-- Take attendance for a given date (marks P/A for each student)
-- View eligibility (>=75% => Eligible)
-- View attendance history for a student
-- Data persistence using JSON files: students.json, attendance.json
 
-Run: python attendance_manager.py
-"""
 
 import json
 import os
@@ -19,7 +9,7 @@ ATTENDANCE_FILE = "attendance.json"
 ELIGIBILITY_THRESHOLD = 75.0  # percentage
 
 
-# ---------- Utilities for file I/O ----------
+# Utilities for file I/O 
 def load_json(path, default):
     if not os.path.exists(path):
         return default
@@ -35,7 +25,7 @@ def save_json(path, data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 
-# ---------- Data helpers ----------
+# Data helpers 
 def ensure_data_files():
     # students: list of dicts { "id": int, "name": str }
     students = load_json(STUDENTS_FILE, [])
@@ -51,7 +41,7 @@ def next_student_id(students):
     return max(s["id"] for s in students) + 1
 
 
-# ---------- Student management ----------
+#Student management
 def add_student():
     students = load_json(STUDENTS_FILE, [])
     name = input("Enter student name: ").strip()
@@ -99,14 +89,13 @@ def remove_student():
         print(f"Removed student ID {sid}.")
 
 
-# ---------- Attendance ----------
+# Attendance 
 def take_attendance():
     students = load_json(STUDENTS_FILE, [])
     if not students:
         print("No students to take attendance for. Add students first.")
         return
 
-    # Ask for date
     date_input = input("Enter date for attendance (YYYY-MM-DD) or press Enter for today: ").strip()
     if not date_input:
         date_str = datetime.now().strftime("%Y-%m-%d")
@@ -120,7 +109,6 @@ def take_attendance():
 
     attendance = load_json(ATTENDANCE_FILE, {})
 
-    # If attendance already exists for that date, ask if overwrite
     if date_str in attendance:
         overwrite = input(f"Attendance for {date_str} already exists. Overwrite? (y/N): ").strip().lower()
         if overwrite != "y":
@@ -147,7 +135,7 @@ def take_attendance():
     print(f"\nSaved attendance for {date_str}. {len(day_record)} records.\n")
 
 
-# ---------- Reports ----------
+# Reports 
 def calculate_attendance_percentages():
     students = load_json(STUDENTS_FILE, [])
     attendance = load_json(ATTENDANCE_FILE, {})
